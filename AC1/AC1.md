@@ -32,7 +32,7 @@ plt.show()
 Diferentemente da Computação Gráfica, o Processamento de Imagens não cria imagens do zero, mas sim manipula imagens existentes para aprimorá-las ou extrair informações. O objetivo é melhorar a qualidade da imagem, remover ruídos, realçar características ou prepará-la para outra aplicação.
 
 ### Exemplo
-Cria uma imagem artificial em preto e branco e depois aplicar um "inversor de cores":
+Cria uma imagem artificial em preto e branco e depois aplica um "inversor de cores":
 
 ```python
 import numpy as np
