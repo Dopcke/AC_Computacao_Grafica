@@ -1,239 +1,185 @@
-# Atividade – Computação Visual (versão expandida)
-
-## Objetivo
-Demonstrar as diferenças e principais características das áreas relacionadas à **Computação Visual**:  
-- **Síntese de Imagens (Computação Gráfica)**  
-- **Processamento de Imagens**  
-- **Visão Computacional (Artificial)**  
-- **Visualização Computacional**
-
-Para cada área, incluí:
-1) **Explicação conceitual ampliada**;  
-2) **Aplicação real com repositório público** (link e instruções de execução);  
-3) **Trecho executável** (adaptado do repositório citado) com comentários;  
-4) **Aspectos específicos da área** destacados no código.
-
-> **Importante**: Os trechos abaixo foram **adaptados** de repositórios públicos e documentações oficiais, com os devidos créditos.
-Links originais estão em cada seção.
-
----
-
-## Diferenças – visão geral rápida
-
-| Área                         | Pergunta que responde                                   | Entrada típica                 | Saída típica                               | Núcleo técnico dominante                    | Exemplos comuns                                                |
-|-----------------------------|----------------------------------------------------------|-------------------------------|--------------------------------------------|---------------------------------------------|----------------------------------------------------------------|
-| **Computação Gráfica**      | *Como **gerar** uma imagem/modelo?*                     | Parâmetros geom./físicos      | Imagem/Animação sintetizada                | Modelagem, renderização, shaders, rasterização ou ray tracing  | Jogos, filmes, CAD, simulações                                 |
-| **Processamento de Imagens**| *Como **melhorar/transformar** esta imagem?*            | Imagem existente              | Imagem transformada/realçada               | Filtros, convolução, morfologia, FFT                          | Remoção de ruído, equalização, detecção de bordas              |
-| **Visão Computacional**     | *O que **significa** o conteúdo desta imagem/vídeo?*     | Imagem/vídeo                  | Rótulos, caixas, máscaras, medições        | ML/DL (CNNs), detecção, segmentação, rastreamento             | Reconhecimento facial, OCR, carros autônomos                   |
-| **Visualização Computacional** | *Como **compreender** dados complexos via gráficos?* | Dados multidimensionais       | Gráficos 2D/3D/Interativos                 | Redução de dimensionalidade, mapeamento visual                 | Dashboards, gráficos científicos, mapas 3D                     |
-
----
 
 ## 1) Síntese de Imagens (Computação Gráfica)
 
-**Conceito ampliado.** Gera imagens a partir de **modelos** (geometria, materiais, luzes, câmera) e **métodos de renderização** (rasterização, ray tracing, path tracing). A ênfase está na **formação de imagem** realista/estilizada, física de luz, texturização, sombreamento e animação.
+**O que é (em poucas palavras):**  
+Gerar imagens **a partir de modelos ou fórmulas**. Em vez de “editar” uma foto, aqui nós **criamos** a cena: formas, cores, iluminação, câmera.
 
-**Repositório/Referência pública:**  
-- *Matplotlib Gallery – 3D Surface (colormap)* – exemplo oficial de superfície 3D. (código e explicações)  
-  Fonte: https://matplotlib.org/stable/gallery/mplot3d/surface3d.html
+**Exemplo simples:**  
+Gerar e renderizar uma **superfície 3D** definida por uma função matemática.
 
-### Como executar rapidamente (ambiente local)
+**Como executar**
 ```bash
-python -m venv .venv && source .venv/bin/activate  # (Linux/macOS)
+python -m venv .venv && source .venv/bin/activate   # Linux/macOS
 # No Windows: .venv\Scripts\activate
 pip install matplotlib numpy
-python superficie3d_demo.py
+python cg_superficie3d.py
 ```
 
-Crie um arquivo `superficie3d_demo.py` com o trecho adaptado abaixo.
-
-### Trecho executável (adaptado da documentação oficial do Matplotlib)
+**Código (independente) – inspirado na gallery oficial do Matplotlib**  
+Crie um arquivo `cg_superficie3d.py` com:
 ```python
-# arquivo: superficie3d_demo.py
-# Adaptado da gallery "3D surface (colormap)" do Matplotlib (licença Matplotlib)
+# cg_superficie3d.py
+# Inspirado na Matplotlib Gallery: 3D surface (licença compatível da doc oficial)
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
-from matplotlib.ticker import LinearLocator
 
-# grade 2D
+# cria uma grade 2D
 x = np.linspace(-6, 6, 200)
 y = np.linspace(-6, 6, 200)
 X, Y = np.meshgrid(x, y)
 
-# superfície: função radial suave (síntese geométrica)
-R = np.sqrt(X**2 + Y**2)
-Z = np.sin(R) / (R + 1e-6)
+# superfície: Z é função de X e Y (síntese, não edição)
+R = np.sqrt(X**2 + Y**2) + 1e-6
+Z = np.sin(R) / R
 
-fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm, antialiased=False)
-
-ax.zaxis.set_major_locator(LinearLocator(8))
-ax.set_title("Síntese: superfície 3D gerada de função matemática")
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+surf = ax.plot_surface(X, Y, Z, cmap=cm.viridis, linewidth=0, antialiased=True)
+ax.set_title("Síntese: superfície 3D criada por função matemática")
 fig.colorbar(surf, shrink=0.6, aspect=10)
 plt.show()
 ```
 
-**Aspectos de CG no código:** modelagem **analítica** da superfície (função Z=f(x,y)), colormap simulando material/iluminação, câmera implícita e projeção 3D → 2D.
-
+**Por que isso é CG?**  
+Porque **criamos** a imagem a partir de uma **descrição matemática** (modelo), controlando câmera e aparência.
 
 ---
 
 ## 2) Processamento de Imagens
 
-**Conceito ampliado.** Opera **sobre imagens existentes** para **realçar**, **filtrar**, **transformar** e **segmentar**. Não “entende” semanticamente; o foco é **processo sinal-imagem** (convolução, gradientes, morfologia, espaço de cores, frequências).
+**O que é:**  
+Aplicar **operações** para **melhorar ou transformar** uma imagem que **já existe** (filtros, detecção de bordas, equalização de histograma, etc.). Não reconhece “o que é” a imagem, apenas **processa** os pixels.
 
-**Repositório público (exemplo Canny):**  
-- *Ankush251992/OpenCV-Edge-Detection* – script com detecção de bordas Canny e variações.  
-  Fonte: https://github.com/Ankush251992/OpenCV-Edge-Detection
+**Exemplo simples:**  
+Gerar uma imagem sintética com formas (retângulos/círculos) e aplicar **detecção de bordas de Canny**.
 
-### Como executar rapidamente
+**Como executar**
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install opencv-python matplotlib
-python canny_demo.py --img caminho/para/imagem.jpg --low 100 --high 200
+pip install opencv-python matplotlib numpy
+python pi_canny_sintetico.py
 ```
 
-Crie `canny_demo.py` com o trecho abaixo (adaptado do padrão de uso do OpenCV Canny).
-
-### Trecho executável (adaptado de repositórios de Canny com OpenCV)
+**Código (independente) – baseado no uso comum do OpenCV Canny**  
+Crie `pi_canny_sintetico.py`:
 ```python
-# arquivo: canny_demo.py
-# Adaptado de exemplos de Canny em OpenCV (ver repo citado)
-import argparse
+# pi_canny_sintetico.py
+# Baseado em exemplos públicos do OpenCV (Canny)
 import cv2
+import numpy as np
 import matplotlib.pyplot as plt
 
-ap = argparse.ArgumentParser()
-ap.add_argument("--img", required=True, help="caminho da imagem de entrada")
-ap.add_argument("--low", type=int, default=100, help="limiar baixo")
-ap.add_argument("--high", type=int, default=200, help="limiar alto")
-args = ap.parse_args()
+# cria imagem sintética em tons de cinza
+img = np.zeros((300, 400), dtype=np.uint8)
+cv2.rectangle(img, (50, 50), (180, 200), 180, -1)     # retângulo cinza
+cv2.circle(img, (280, 150), 60, 255, -1)              # círculo branco
+cv2.line(img, (20, 260), (380, 260), 200, 5)          # linha
 
-img = cv2.imread(args.img, cv2.IMREAD_GRAYSCALE)
-edges = cv2.Canny(img, args.low, args.high)
+# aplica Canny (bordas)
+edges = cv2.Canny(img, 100, 200)
 
-plt.figure(figsize=(10,4))
-plt.subplot(1,2,1); plt.imshow(img, cmap="gray"); plt.title("Original"); plt.axis("off")
-plt.subplot(1,2,2); plt.imshow(edges, cmap="gray"); plt.title(f"Canny ({args.low}, {args.high})"); plt.axis("off")
+# mostra lado a lado
+plt.figure(figsize=(8,3))
+plt.subplot(1,2,1); plt.imshow(img, cmap="gray"); plt.title("Imagem sintética"); plt.axis("off")
+plt.subplot(1,2,2); plt.imshow(edges, cmap="gray"); plt.title("Bordas (Canny)"); plt.axis("off")
 plt.tight_layout(); plt.show()
 ```
 
-**Aspectos de PI no código:** pipeline clássico **suavização → gradiente → supressão não-máxima → histerese** (Canny). Ajuste de thresholds altera sensibilidade a bordas.
-
+**Por que isso é Processamento?**  
+Porque partimos de uma **imagem** (mesmo que criada na hora) e aplicamos um **filtro** (Canny) para **transformar/realçar** informações de borda.
 
 ---
 
-## 3) Visão Computacional (Artificial)
+## 3) Visão Computacional
 
-**Conceito ampliado.** Procura **interpretar** o conteúdo: classificar objetos, localizar, segmentar e tomar decisões. Usa tanto **métodos clássicos** (Hough, SIFT/ORB) quanto **aprendizado profundo** (CNNs, Transformers). A saída é **semântica** (rótulos, caixas, máscaras).
+**O que é:**  
+Fazer o computador **entender** o conteúdo da imagem/vídeo (reconhecer, classificar, detectar). Aqui a saída é **semântica** (rótulos, classes), não apenas pixels transformados.
 
-**Repositório/Exemplo oficial (MNIST CNN – Keras):**  
-- *Keras Examples – Simple MNIST convnet* (exemplo oficial com ~99% de acurácia em MNIST).  
-  Fonte: https://keras.io/examples/vision/mnist_convnet/
+**Exemplo simples:**  
+Usar o dataset **Digits** do scikit‑learn (imagens 8×8 de dígitos) e treinar um classificador **SVM** simples. 
 
-### Como executar rapidamente
+**Como executar**
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install --upgrade pip
-pip install keras tensorflow numpy matplotlib
-python mnist_cnn.py
+pip install scikit-learn numpy
+python vc_digits_svm.py
 ```
 
-Crie `mnist_cnn.py` com o trecho adaptado abaixo.
-
-### Trecho executável (adaptado de Keras Examples)
+**Código (independente) – inspirado na doc oficial do scikit‑learn**  
+Crie `vc_digits_svm.py`:
 ```python
-# arquivo: mnist_cnn.py
-# Adaptado do exemplo "Simple MNIST convnet" (Keras Examples, licença Apache 2.0)
-import numpy as np
-from tensorflow import keras
-from keras import layers
+# vc_digits_svm.py
+# Inspirado em exemplos da documentação do scikit-learn (licença BSD-3)
+from sklearn import datasets, svm, metrics
+from sklearn.model_selection import train_test_split
 
-# carregar dados MNIST
-(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
-x_train = x_train.astype("float32") / 255.0
-x_test  = x_test.astype("float32") / 255.0
-x_train = np.expand_dims(x_train, -1); x_test = np.expand_dims(x_test, -1)
+# carrega imagens de dígitos (8x8 pixels)
+digits = datasets.load_digits()
+X = digits.images.reshape((len(digits.images), -1))  # achata para vetores
+y = digits.target
 
-# modelo CNN mínimo
-model = keras.Sequential([
-    layers.Conv2D(32, 3, activation="relu", input_shape=(28, 28, 1)),
-    layers.MaxPooling2D(),
-    layers.Conv2D(64, 3, activation="relu"),
-    layers.Flatten(),
-    layers.Dense(64, activation="relu"),
-    layers.Dense(10, activation="softmax"),
-])
-model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
-model.summary()
+# separa treino/teste
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
 
-# treino curto
-model.fit(x_train, y_train, epochs=2, batch_size=128, validation_split=0.1)
-test_loss, test_acc = model.evaluate(x_test, y_test, verbose=0)
-print(f"Acurácia em teste: {test_acc:.4f}")
+# classificador simples (SVM)
+clf = svm.SVC(gamma=0.001)
+clf.fit(X_train, y_train)
+
+# avalia
+pred = clf.predict(X_test)
+acc = metrics.accuracy_score(y_test, pred)
+print(f"Acurácia no teste: {acc:.4f}")
 ```
 
-**Aspectos de VC no código:** **aprendizado supervisionado** com **CNN** para reconhecer dígitos; saída **semântica** (classe 0–9). Difere de processamento (que só transforma pixel) e de CG (que gera pixels).
-
+**Por que isso é Visão?**  
+Porque o sistema **aprende a reconhecer** o **conteúdo** da imagem (qual dígito é), produzindo uma **classe** como resposta.
 
 ---
 
 ## 4) Visualização Computacional
 
-**Conceito ampliado.** Converte **dados** (muitas dimensões) em **gráficos** para revelar padrões/estruturas. Técnicas incluem **PCA/TSNE/UMAP**, mapas de calor, superfícies, gráficos interativos. O foco é **insight humano** por meio de boa codificação visual (posição, cor, forma, tamanho).
+**O que é:**  
+Transformar **dados** em **gráficos** que facilitam enxergar padrões. A ideia é ajudar pessoas a entenderem informações complexas.
 
-**Repositório/Exemplo oficial (Scikit‑learn – PCA Iris):**  
-- *scikit‑learn auto_examples/decomposition/plot_pca_iris* – exemplo clássico de PCA no dataset Iris.  
-  Fonte: https://scikit-learn.org/stable/auto_examples/decomposition/plot_pca_iris.html
+**Exemplo simples:**  
+Aplicar **PCA** para reduzir o dataset **Iris** (4 dimensões) para 2D e **plotar** os pontos.
 
-### Como executar rapidamente
+**Como executar**
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install scikit-learn matplotlib
-python pca_iris.py
+python vis_pca_iris.py
 ```
 
-Crie `pca_iris.py` com o trecho adaptado abaixo.
-
-### Trecho executável (adaptado de scikit‑learn examples)
+**Código (independente) – inspirado em exemplo oficial do scikit‑learn**  
+Crie `vis_pca_iris.py`:
 ```python
-# arquivo: pca_iris.py
-# Adaptado do exemplo "plot_pca_iris" (scikit-learn, licença BSD-3)
+# vis_pca_iris.py
+# Inspirado no exemplo plot_pca_iris da doc do scikit-learn (licença BSD-3)
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 from sklearn.decomposition import PCA
 
 iris = load_iris()
 X, y = iris.data, iris.target
-pca = PCA(n_components=2).fit(X)
-X2 = pca.transform(X)
 
-plt.figure()
-scatter = plt.scatter(X2[:, 0], X2[:, 1], c=y)
-plt.legend(*scatter.legend_elements(), title="Classes (Iris)")
-plt.xlabel("PC1"); plt.ylabel("PC2"); plt.title("Visualização: PCA em Iris (2D)")
+# reduz de 4D para 2D
+X2 = PCA(n_components=2).fit_transform(X)
+
+plt.scatter(X2[:, 0], X2[:, 1], c=y)
+plt.title("Iris em 2D com PCA (Visualização)")
+plt.xlabel("PC1"); plt.ylabel("PC2")
 plt.show()
 ```
 
-**Aspectos de Visualização no código:** **redução de dimensionalidade** para 2D, **mapeamento de cores** por classe e **ênfase em leitura** (rótulos, legenda) para gerar insight.
+**Por que isso é Visualização?**  
+Porque pegamos **dados numéricos** e os **mapeamos** em um gráfico que permite **ver** agrupamentos e diferenças.
 
 ---
 
-## Conclusão (o que diferencia na prática)
-
-- **CG**: começa com **modelos** → gera **pixels** (síntese).  
-- **Processamento**: começa com **pixels reais** → gera **pixels transformados** (melhoria).  
-- **Visão**: começa com **pixels reais** → gera **significado** (classes, caixas, máscaras).  
-- **Visualização**: começa com **dados** → gera **gráficos** (insights humanos).
-
-Essas áreas **se complementam**: por exemplo, CG pode gerar dados sintéticos para treinar modelos de Visão; Processamento pode preparar imagens antes da Visão; Visualização ajuda humanos a entender tanto dados de Processamento quanto resultados de Visão.
-
----
-
-## Créditos e referências
-- Matplotlib Gallery – 3D Surface (colormap) — documentação oficial.  
-- Ankush251992/OpenCV‑Edge‑Detection — repositório OpenCV Canny.  
-- Keras Examples — Simple MNIST convnet (Keras).  
-- scikit‑learn — plot_pca_iris (exemplo oficial).
-
+## Fechando
+- **CG (Síntese):** cria pixels a partir de modelos.  
+- **Processamento:** transforma pixels já existentes.  
+- **Visão:** interpreta o conteúdo e devolve significado (classe/objeto).  
+- **Visualização:** converte dados em gráficos para humanos entenderem.
