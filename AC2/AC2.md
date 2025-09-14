@@ -77,5 +77,4 @@ O tamanho do triângulo dobrou em cada dimensão. A área ficou 4 vezes maior.
 **Resposta final:**  
 A'(1.5, 2), B'(−4.5, 2), C'(−4.5, 3), D'(1.5, 3)
 
----
 
