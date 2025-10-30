@@ -51,14 +51,14 @@ Essas duas formas são complementares — **o CMY é o inverso do RGB**.
 
 ---
 
-### Aplicação Prática
+## Aplicação Prática
 
 O **sensoriamento remoto por satélite** consiste em captar, via satélite ou outro veículo orbital, a radiação refletida ou emitida pela superfície terrestre ou pela atmosfera, em diferentes comprimentos de onda.  
 Esses dados permitem **inferir propriedades do solo, vegetação, água e atmosfera**, entre outros elementos.
 
 ---
 
-## 2. Aplicações Principais
+## 1. Aplicações Principais
 
 - **Monitoramento agrícola:** análise da saúde da vegetação, produtividade, irrigação e uso do solo.  
 - **Mapeamento de uso e cobertura da terra:** identificação de expansão urbana, desmatamento e áreas agrícolas.  
@@ -68,7 +68,7 @@ Esses dados permitem **inferir propriedades do solo, vegetação, água e atmosf
 
 ---
 
-## 3. Espaços de Cores em Imagens de Satélite
+## 2. Espaços de Cores em Imagens de Satélite
 
 Imagens multiespectrais de satélite registram informações em várias bandas espectrais (vermelho, verde, azul, infravermelho, etc.).  
 Ao mapear três dessas bandas nos canais **R (Red)**, **G (Green)** e **B (Blue)**, formamos diferentes **espaços de cores**.
@@ -77,7 +77,7 @@ A seguir, dois dos mais comuns:
 
 ---
 
-### 3.1 Espaço de Cor Natural (True Color)
+### 2.1 Espaço de Cor Natural (True Color)
 
 **Descrição:**  
 - Usa as bandas visíveis (vermelho, verde e azul) mapeadas diretamente para R, G e B.  
@@ -102,7 +102,7 @@ Na imagem acima, a vegetação aparece em verde, a água em azul escuro e o solo
 
 ---
 
-### 3.2 Espaço de Cor Falsa (False Color Composite)
+### 2.2 Espaço de Cor Falsa (False Color Composite)
 
 **Descrição:**  
 - Utiliza bandas fora do visível (como o infravermelho próximo — NIR) e as associa aos canais RGB.  
@@ -125,7 +125,7 @@ Aqui, a vegetação saudável aparece em vermelho, áreas urbanas em tons acinze
 
 ---
 
-## 4. Conclusão
+## 3. Conclusão
 
 O uso de diferentes **espaços de cores** em imagens de satélite permite visualizar e interpretar informações distintas da superfície terrestre.  
 Enquanto o **True Color** é útil para visualização natural, o **False Color** destaca aspectos invisíveis ao olho humano, sendo fundamental para **monitoramento ambiental, análise agrícola e detecção de mudanças**.
