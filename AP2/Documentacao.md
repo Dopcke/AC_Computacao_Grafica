@@ -1,4 +1,5 @@
 # Documentação AP2 – Cena Ponte e Abdução 🛸
+Link do Drive do Blender e Video - https://drive.google.com/drive/folders/1P3aeJbHZ88_e-igGd_YXWgaLJl0CrCT-?usp=sharing
 
 ## 1. Conceito da Animação (O que acontece)
 
@@ -41,3 +42,4 @@ Para deixar a cena realista (usando PBR/Principled BSDF), utilizei os seguintes 
 ### 3. Ajuste de Textura na Ponte
 * *O Desafio:* A textura de madeira estava esticada em algumas partes da ponte.
 * *A Solução:* Fiz o *UV Unwrapping* da ponte novamente e apliquei o *Scale* (Ctrl+A), corrigindo a distorção.
+
